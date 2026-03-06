@@ -167,8 +167,24 @@ with st.sidebar:
         min_value=100, max_value=50_000_000,
         value=1_000_000, step=10_000)
 
+    uploaded = st.file_uploader(
+        "📂 Upload your profile.json",
+        type="json",
+        help="Run run_benchmark.py → upload scalepredict_profile.json here")
+
+    if uploaded:
+        client_data = json.load(uploaded)
+        st.session_state["client_profile"] = client_data
+        hw = client_data["hardware"]
+        gpu_str = f" + {hw['gpu']}" if hw.get("gpu") else " (CPU)"
+        st.success(f"✅ {hw['cpu'][:30]}...{gpu_str}")
+    elif "client_profile" not in st.session_state:
+        st.session_state["client_profile"] = None
+
+    st.markdown("---")
+    st.markdown('<div class="tag">// demo — no profile yet</div>', unsafe_allow_html=True)
     local_machine = st.selectbox(
-        "Your local machine",
+        "Demo machine (replaced when you upload)",
         list(MACHINES.keys()), index=0)
 
     st.markdown("---")
@@ -242,6 +258,24 @@ with col4:
 st.markdown("---")
 
 # ── ГРАФИКИ ───────────────────────────────────────────────────────────────────
+# ── UPLOAD BANNER ────────────────────────────────────────────────────────────
+if not st.session_state.get("client_profile"):
+    st.markdown("""
+    <div style='background:rgba(0,245,196,0.06); border:1px solid rgba(0,245,196,0.4);
+         border-radius:4px; padding:20px 24px; margin-bottom:8px;
+         font-family:Space Mono,monospace;'>
+      <div style='color:#00f5c4; font-size:0.85rem; font-weight:700; margin-bottom:8px'>
+        ⚡ ДЕМО РЕЖИМ — виждаш примерни данни
+      </div>
+      <div style='color:#5a5a7a; font-size:0.8rem; line-height:1.9'>
+        За да видиш ТВОЯТА машина:<br>
+        1. Свали <b style="color:#e8e8f0">run_benchmark.py</b> от GitHub<br>
+        2. Пусни го локално — 2 минути<br>
+        3. Качи <b style="color:#e8e8f0">scalepredict_profile.json</b> в sidebar вляво
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 col_l, col_r = st.columns(2)
 
 with col_l:
@@ -281,9 +315,15 @@ with col_r:
             unsafe_allow_html=True)
 
 # ── РЕАЛЕН ПРОФИЛ ─────────────────────────────────────────────────────────────
-if pathlib.Path("scalepredict_profile.json").exists():
+# Взима от upload или от локален файл
+profile = None
+if st.session_state.get("client_profile"):
+    profile = st.session_state["client_profile"]
+elif pathlib.Path("scalepredict_profile.json").exists():
     with open("scalepredict_profile.json") as f:
         profile = json.load(f)
+
+if profile:
 
     st.markdown("---")
     st.markdown('<div class="tag">// твоят реален профил (от run_benchmark.py)</div>',
