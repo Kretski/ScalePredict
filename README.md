@@ -162,3 +162,10 @@ MIT — use freely.
 
 *Based on real measurements from 3 machines.  
 CPU↔CPU correlation r=0.9969.*
+
+
+
+## Calculator (no install needed)
+
+Just open the browser and enter your numbers:
+https://scalepredict.streamlit.app/calculator
