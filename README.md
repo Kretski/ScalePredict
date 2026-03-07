@@ -9,6 +9,7 @@ No guessing. No wasted money.
 
 
 ## The Problem
+<img width="1887" height="900" alt="lighshot_2026-03-06_07-10-21" src="https://github.com/user-attachments/assets/5f7d2aa2-a1ea-437c-87c4-fca49ff3738f" />
 
 You have 1 million images to process with AI.  
 You open AWS and see:
