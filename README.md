@@ -4,9 +4,7 @@
 
 No guessing. No wasted money.
 
----<img width="1875" height="879" alt="lighshot_2026-03-06_07-<img width="1887" height="900" alt="lighshot_2026-03-06_07-10-21" src="https://github.com/user-attachments/assets/68418b4e-3639-46b5-9f6e-cdd2922eb6f2" />
-09-58" src="https://github.com/user-attachments/assets/51e1d61d-16c9-45c4-ac75-557e5139fd48" />
-
+<img width="1875" height="879" alt="lighshot_2026-03-06_07-09-58" src="https://github.com/user-attachments/assets/612de392-9124-4468-9f2a-b4aa8e046880" />
 
 ## The Problem
 <img width="1887" height="900" alt="lighshot_2026-03-06_07-10-21" src="https://github.com/user-attachments/assets/5f7d2aa2-a1ea-437c-87c4-fca49ff3738f" />
