@@ -1,6 +1,17 @@
 # ⚡ ScalePredict
 # ScalePredict
+## Tested on Real Hardware
 
+| Machine | Type | W Score | Best Batch |
+|---------|------|---------|------------|
+| Lenovo L14 | AMD Ryzen CPU | 0.054 | 128 |
+| Fujitsu Server | Intel CPU | 0.073 | 128 |
+| AMD64 (user) | AMD CPU | 0.054 | 1 |
+| Xeon + Quadro M4000 | Intel + GPU | 0.730 | 128 |
+
+CPU↔CPU correlation: r=0.9969
+Note: CPU↔GPU correlation is negative by design —
+GPU latency decreases with batch size, CPU increases.
 <p align="center">
   <a href="https://github.com/Kretski/ScalePredict">
     <img src="https://img.shields.io/github/stars/Kretski/ScalePredict?style=social" alt="GitHub Stars">
