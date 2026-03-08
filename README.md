@@ -1,5 +1,9 @@
 # ⚡ ScalePredict
+# ScalePredict
 
+[![Star on GitHub](https://img.shields.io/github/stars/Kretski/ScalePredict.svg?style=social&logo=github)](https://github.com/Kretski/ScalePredict)
+
+Run a 2-minute local benchmark to predict cloud GPU performance...
 > Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
 
 No guessing. No wasted money.
