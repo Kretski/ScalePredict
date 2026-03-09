@@ -9,6 +9,27 @@
   <a href="https://scalepredict.streamlit.app/calculator">
     <img src="https://img.shields.io/badge/Calculator-No%20Install%20Needed-orange?style=for-the-badge" alt="Calculator">
   </a>
+</p>
+```
+
+---
+
+След това — **Reddit r/MachineLearning**:
+```
+Title:
+ScalePredict – predict cloud GPU runtime from a 2-min local benchmark
+
+Text:
+Tired of guessing which GPU to rent?
+
+Run a 2-minute benchmark on your laptop →
+get predicted runtime for T4/V100/A100 before you pay.
+
+Tested on 3 real machines. CPU↔CPU r=0.9969.
+No account needed. Open source.
+
+GitHub: https://github.com/Kretski/ScalePredict
+Calculator (no install): https://scalepredict.streamlit.app/calculator
 | Machine | Type | W Score | Best Batch |
 |---------|------|---------|------------|
 | Lenovo L14 | AMD Ryzen CPU | 0.054 | 128 |
