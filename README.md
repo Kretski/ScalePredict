@@ -1,7 +1,14 @@
 # ⚡ ScalePredict
 # ScalePredict
 ## Tested on Real Hardware
-
+<p align="center">
+  <a href="https://scalepredict.streamlit.app">
+    <img src="https://img.shields.io/badge/Live%20Demo-scalepredict.streamlit.app-00f5c4?style=for-the-badge" alt="Live Demo">
+  </a>
+  &nbsp;
+  <a href="https://scalepredict.streamlit.app/calculator">
+    <img src="https://img.shields.io/badge/Calculator-No%20Install%20Needed-orange?style=for-the-badge" alt="Calculator">
+  </a>
 | Machine | Type | W Score | Best Batch |
 |---------|------|---------|------------|
 | Lenovo L14 | AMD Ryzen CPU | 0.054 | 128 |
