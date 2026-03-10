@@ -1,4 +1,5 @@
-
+> ⭐ If this saved you from a wrong GPU choice, 
+> consider starring the repo.
 # ⚡ ScalePredict
 
 > Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
