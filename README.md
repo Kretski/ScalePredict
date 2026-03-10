@@ -62,7 +62,13 @@ Measures your actual machine. Then:
 
 Look up the price yourself. Multiply. Done.
 
----
+---## Known Limitations
+
+- Optimized for CNN inference (ResNet, YOLO)
+- Transformer models with long context may
+  show different memory access patterns
+- Prediction accuracy decreases for models
+  with irregular memory access
 
 ## Quick Start
 
