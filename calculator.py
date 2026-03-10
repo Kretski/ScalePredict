@@ -115,6 +115,20 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+# ── PRIVACY NOTE ─────────────────────────────────────────────────────────────
+st.markdown("""
+<div style='background:rgba(0,245,196,0.04); border:1px solid rgba(0,245,196,0.2);
+     border-radius:4px; padding:14px 18px; margin-bottom:20px;
+     font-family:Space Mono,monospace; font-size:0.75rem; color:#5a5a7a;
+     line-height:1.9'>
+  🔒 <b style="color:#e8e8f0">Privacy:</b>
+  This tool runs entirely in your browser session.<br>
+  No data is stored. No data is sent to any server.<br>
+  The calculator uses only the numbers you enter — nothing else.
+</div>
+""", unsafe_allow_html=True)
+
 # ── ФОРМА ─────────────────────────────────────────────────────────────────────
 st.markdown('<div class="section">// твоят job</div>', unsafe_allow_html=True)
 
