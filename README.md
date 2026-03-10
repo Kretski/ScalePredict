@@ -1,5 +1,3 @@
-> ⭐ If this saved you from a wrong GPU choice, 
-> consider starring the repo.
 # ⚡ ScalePredict
 
 > Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
@@ -7,6 +5,10 @@
 No guessing. No wasted money.
 
 <p align="center">
+  <a href="https://github.com/Kretski/ScalePredict">
+    <img src="https://img.shields.io/github/stars/Kretski/ScalePredict?style=for-the-badge&color=yellow" alt="GitHub Stars">
+  </a>
+  &nbsp;
   <a href="https://scalepredict.streamlit.app">
     <img src="https://img.shields.io/badge/Live%20Demo-scalepredict.streamlit.app-00f5c4?style=for-the-badge" alt="Live Demo">
   </a>
@@ -14,10 +16,10 @@ No guessing. No wasted money.
   <a href="https://scalepredict.streamlit.app/calculator">
     <img src="https://img.shields.io/badge/Calculator-No%20Install%20Needed-orange?style=for-the-badge" alt="Calculator">
   </a>
-  &nbsp;
-  <a href="https://github.com/Kretski/ScalePredict">
-    <img src="https://img.shields.io/github/stars/Kretski/ScalePredict?style=social" alt="GitHub Stars">
-  </a>
+</p>
+
+<p align="center">
+  <b>⭐ If this saved you from a wrong GPU choice — star the repo.</b>
 </p>
 
 ---
@@ -36,6 +38,10 @@ A100 GPU  →  $3.20/hr
 You don't know which one to pick.  
 You don't know how many hours you'll need.  
 You guess. You pay. Sometimes you're wrong.
+
+> *"I chose V100 for a job that turned out to be too easy —  
+> could have done it on T4 for half the price."*  
+> — Reddit user, r/learnmachinelearning
 
 ---
 
@@ -63,13 +69,7 @@ Measures your actual machine. Then:
 
 Look up the price yourself. Multiply. Done.
 
----## Known Limitations
-
-- Optimized for CNN inference (ResNet, YOLO)
-- Transformer models with long context may
-  show different memory access patterns
-- Prediction accuracy decreases for models
-  with irregular memory access
+---
 
 ## Quick Start
 
@@ -106,8 +106,7 @@ All three machines ran the same `run_benchmark.py` — no simulated data.
 | Lenovo ↔ Xeon+GPU | **0.9971** | **1.0000** |
 | Fujitsu ↔ Xeon+GPU | **0.9998** | **1.0000** |
 
-**Spearman ρ = 1.000 across all pairs** — perfect rank ordering.  
-Measured, not theoretical.
+**Spearman ρ = 1.000 across all pairs** — measured, not theoretical.
 
 ---
 
@@ -139,19 +138,27 @@ k₀ = architecture constant
 Not a lookup table. Not a heuristic.  
 Original formula — cross-architecture scaling model.
 
-### W Score
+---
 
-```
-W = Q · D - T
+## Known Limitations
 
-Q = throughput quality   (normalized)
-D = resource availability (free RAM)
-T = system tension        (CPU load)
+- Optimized for CNN inference (ResNet, YOLO, image classification)
+- Transformer models with long context may show different memory access patterns — prediction less accurate for sequences > 512 tokens
+- Prediction accuracy decreases for models with irregular memory access
+- GPU warmup outliers are removed automatically (first batch excluded)
 
-W > 0.3  → Production ready
-W > 0.0  → Marginal
-W < 0.0  → Resource constrained
-```
+---
+
+## Privacy
+
+The `scalepredict_profile.json` contains:
+- CPU model name
+- RAM size
+- Core count
+- Benchmark results (latency, throughput)
+
+**No usernames. No location. No personal data.**  
+Open it in any text editor to verify before uploading.
 
 ---
 
@@ -168,22 +175,6 @@ ScalePredict/
 
 ---
 
-## Results Example
-
-Running `run_benchmark.py` on Xeon + Quadro M4000:
-
-```
-batch=  1  →   5.9ms   170 img/s
-batch=  8  →  17.0ms   470 img/s
-batch= 32  →  53.8ms   594 img/s
-batch= 64  → 104.4ms   613 img/s
-batch=128  → 200.2ms   639 img/s
-
-W = 0.057 × 0.745 - 0.031 = +0.730  ✅ Production ready
-```
-
----
-
 ## Roadmap
 
 - [x] CPU benchmark (Lenovo L14)
@@ -192,6 +183,10 @@ W = 0.057 × 0.745 - 0.031 = +0.730  ✅ Production ready
 - [x] Streamlit dashboard
 - [x] Simple calculator (no install)
 - [x] r > 0.997 on all 3 machine pairs
+- [x] Known limitations documented
+- [x] Privacy notice
+- [ ] Transformer workload support
+- [ ] GCP / Azure pricing links
 - [ ] arXiv preprint
 - [ ] pip package
 
@@ -204,4 +199,4 @@ MIT — use freely.
 ---
 
 *3 machines. 3 real benchmarks. Spearman ρ = 1.000.*  
-*Cross-architecture prediction that actually works.*
+*⭐ Star the repo if it helped you.*
