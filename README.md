@@ -1,7 +1,7 @@
 # ⚡ ScalePredict
 
 > Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
-
+"Premium soon: Tiny Transformer proxy for LLMs + better accuracy + real cloud prices. Email for early access
 No guessing. No wasted money.
 
 <p align="center">
