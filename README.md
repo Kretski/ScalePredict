@@ -43,7 +43,33 @@ You guess. You pay. Sometimes you're wrong.
 > could have done it on T4 for half the price."*  
 > — Reddit user, r/learnmachinelearning
 
----
+-**ScalePredict Update – March 2026**
+
+337 views, 30 testers and 140 clones in the last 14 days.
+
+People most often go straight to “Run a 2-min benchmark” — this is the best signal that the idea resonates.
+
+User feedback (very accurate):
+> “ResNet-18 is good for regular models, but for transformers with long context the prediction will be less accurate.”
+
+I agree 100%. That’s why I’m adding it as a known limitation in the documentation.
+
+**What’s coming soon:**
+- Tiny Transformer proxy (nanoGPT-style) — specifically for LLM and long-context tasks
+- Long-context correction factor (quadratic attention)
+- Real-time cloud prices + recommendation “V100 or T4 is enough?”
+- Parameter-count fallback for quick checks
+
+If you tested — please share:
+
+- What error did you get (predicted vs real)?
+
+- On what model/job (ResNet, Llama, diffusion…)?
+
+Repo: https://github.com/Kretski/ScalePredict
+Demo: https://scalepredict.streamlit.app/calculator
+
+Thanks to everyone who tried! ⚡--
 
 ## The Solution
 
