@@ -1,5 +1,44 @@
 # ⚡ ScalePredict
+# ScalePredict
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
+
+**W-Twin: Forecast-Based Detection of Progressive Neural Network Training Degradation**
+
+ScalePredict monitors neural network training by comparing the observed
+loss trajectory against a scaling-law baseline. W-Twin detects
+progressive degradation that is invisible to classical threshold and
+CUSUM detectors.
+
+## Results (real nano-GPT training runs)
+
+| Experiment | Runs | W-Twin | Threshold | CUSUM |
+|---|---|---|---|---|
+| Progressive drift | 9 | **9/9 (100%)** | 0/9 | 0/9 |
+| Mean delay | — | **223 ± 11 steps** | — | — |
+| False alarm rate | 30 clean | **0/30 (0%)** | 0/30 | 0/30 |
+| Abrupt failure | 2 | 2/2 (+5 steps) | 0/2 | 2/2 (+1 step) |
+
+## Citation
+
+```bibtex
+@software{kretski2026wtwin,
+  author = {Kretski, Dimitar},
+  title  = {W-Twin: Forecast-Based Detection of Progressive 
+             Neural Network Training Degradation},
+  year   = {2026},
+  doi    = {10.5281/zenodo.21842461},
+  url    = {https://zenodo.org/records/21842461}
+}
+```
+
+## Quick start
+
+```bash
+pip install torch numpy scipy
+python examples/train_real.py --mode progressive_label \
+    --failure-step 2000 --steps 3000 --model-size small --seed 42
+```
 > Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
 "Premium soon: Tiny Transformer proxy for LLMs + better accuracy + real cloud prices. Email for early access
 No guessing. No wasted money.
