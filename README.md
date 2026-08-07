@@ -237,4 +237,3 @@ MIT — see [LICENSE](LICENSE).
 
 **Author:** Dimitar Kretski, Center for Hydro- and Aerodynamics, Varna, Bulgaria
 ORCID: [0000-0001-5108-2243](https://orcid.org/0000-0001-5108-2243)
-
