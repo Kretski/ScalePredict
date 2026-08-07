@@ -1,122 +1,240 @@
-# 🧠 AZURO AI - Multi-Domain Engineering Platform
+# ScalePredict
 
-<div align="center">
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
+[![CI](https://github.com/Kretski/ScalePredict/actions/workflows/ci.yml/badge.svg)](https://github.com/Kretski/ScalePredict/actions)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-![Azuro AI](Azuro.ico)
+**Detect progressive neural network training degradation before it shows up in your loss curves.**
 
-**Professional Multi-Domain Engineering Analysis & Optimization**
+ScalePredict compares your training loss against a scaling-law baseline at every step. When the trajectory drifts from what is expected, W-Twin raises an alert — before classical threshold and CUSUM detectors notice anything.
 
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/your-username/azuro-ai/releases)
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Version](https://img.shields.io/badge/Version-1.1-success?style=for-the-badge)](https://github.com/your-username/azuro-ai/releases)
-[![License](https://img.shields.io/badge/License-Commercial-important?style=for-the-badge)](LICENSE)
+---
 
-</div>
+## 30-second example
 
-## 🆕 What's New in Version 1.1
-
-### ✨ Latest Updates & Improvements
-
-| Feature | Description | Benefit |
-|---------|-------------|----------|
-| **🎯 Clear Error Messages** | Enhanced user-friendly error reporting with detailed explanations | Faster problem resolution and better user experience |
-| **📧 Easy Support Access** | One-click email support integration with auto-copy functionality | Instant access to technical support when needed |
-| **📊 Fixed Visualizations** | Improved matplotlib integration and plot rendering | Smoother, more reliable data visualization |
-| **🔢 Launch Counter** | Real-time display of remaining launches and usage statistics | Better license management and planning |
-| **🐛 Bug Fixes** | Various stability improvements and performance optimizations | More reliable operation across all domains |
-
-### 🚀 Enhanced User Experience
-- **Instant Support**: Copy developer email with single click
-- **Clear Guidance**: Step-by-step error resolution suggestions
-- **Visual Polish**: Improved chart quality and rendering speed
-- **Usage Awareness**: Always see how many launches remain
-
-## 🎯 Overview
-
-**AZURO AI** is a comprehensive engineering simulation platform that provides advanced analysis and optimization across multiple engineering domains. The platform integrates real-time data processing, machine learning algorithms, and interactive visualization for professional engineering applications.
-
-### 🔬 **Supported Engineering Domains**
-
-| Domain | Key Parameters | Applications |
-|--------|----------------|--------------|
-| **Chemical Engineering** | Temperature, Pressure, Flow Rate | Process optimization, Reactor design |
-| **Materials Science** | Time, Temperature, Concentration | Material synthesis, Property analysis |
-| **Battery Technology** | Voltage, Current, Temperature | Energy storage, Performance optimization |
-| **Biomedical Engineering** | pH, Temperature, Time | Drug delivery, Biological systems |
-| **Quantum Systems** | Coherence Time, Gate Error, Qubits | Quantum simulation, Algorithm testing |
-| **Thermal Engineering** | ΔTemperature, Flow Rate, Area | Heat transfer, Cooling systems |
-| **Aerospace Engineering** | Mach Number, Altitude, Thrust | Flight performance, Propulsion systems |
-
-## 🚀 Quick Start
-
-### Download & Run (Recommended)
-1. **Download** the latest `AzuroAI.exe` from [Releases](../../releases)
-2. **Double-click** to launch the application
-3. **Check License Status** - View remaining launches in Help menu
-4. **Get Support** - Use built-in email access for any issues
-
-### System Requirements
-- **OS**: Windows 10/11 (64-bit)
-- **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 100MB free space
-- **Display**: 1366x768 resolution minimum
-
-## ⚡ Features
-
-### 🔧 Core Capabilities
-- **Multi-Domain Simulation** - 7 engineering domains with specialized models
-- **Real-Time Data Integration** - CSV, JSON, and live streaming support
-- **Advanced Visualization** - Improved matplotlib charts and interactive plots
-- **Signal Processing** - FFT analysis, cross-correlation, frequency domain analysis
-- **Parameter Optimization** - Automated parameter tuning for maximum efficiency
-
-### 📊 Enhanced Analysis Tools (v1.1)
-- **Smart Error Handling** - Clear, actionable error messages
-- **Launch Management** - Real-time license usage tracking
-- **Support Integration** - Direct developer communication channel
-- **Visualization Fixes** - Reliable chart generation across all domains
-- **Stability Improvements** - Reduced crashes and better error recovery
-
-### 🎨 User Interface Improvements
-- **Modern Dark Theme** - Reduced eye strain during extended use
-- **Enhanced Error Dialogs** - Clear explanations and solutions
-- **License Information Panel** - Always visible launch counter
-- **One-Click Support** - Instant email access for help
-- **Improved Tooltips** - Better guidance throughout the application
-
-## 📁 Usage Guide
-
-### Basic Workflow
-1. **Select Domain** - Choose from 7 engineering domains
-2. **Adjust Parameters** - Use sliders to set simulation parameters
-3. **Check License** - View remaining launches in status bar
-4. **Import Data** (Optional) - Load external datasets for enhanced accuracy
-5. **Run Analysis** - Execute simulations with improved visualization
-6. **Get Help** - Use one-click support if needed
-
-### 🆕 Version 1.1 Enhancements
-
-#### Clear Error Handling
-- **User-Friendly Messages**: Instead of technical codes, get plain English explanations
-- **Actionable Solutions**: Each error includes suggested next steps
-- **Support Integration**: Direct links to contact developer for complex issues
-
-#### Easy Support Access
 ```python
-# Built-in support features:
+from scalepredict.monitor import WTwinMonitor
 
-ersion 1.1 License Improvements
-Visible Counter: Always know how many launches remain
+monitor = WTwinMonitor()
 
-Proactive Alerts: Get notified before license expires
+# Drop into any training loop — one line per step
+for step, loss in enumerate(your_training_losses, 1):
+    state = monitor.update(step, loss)
+    if state.alert:
+        print(f"⚠ Degradation detected at step {step}  (W={state.W:.2f})")
+        # → rollback checkpoint, send alert, or stop run
+```
 
-Simple Renewal: Direct email integration for quick extension
+Or from the command line — no code needed:
 
-Clear Messages: Understand exactly what each license status means
-- One-click email copy: "kretski1@gmail.com"
-- Automatic error reporting preparation
-- Quick license extension requests
+```bash
+pip install git+https://github.com/Kretski/ScalePredict.git
+scalepredict monitor training_log.csv
+scalepredict demo
+```
 
+---
 
+## The problem
 
-https://github.com/Kretski/GravOptAdaptiveE
+Current training monitors are **reactive**: they catch NaN losses, gradient explosions, and hardware failures *after* the damage is done. Progressive degradation — slowly increasing label noise, gradual weight corruption, subtle data pipeline drift — accumulates undetected until significant GPU budget is wasted.
+
+## How it works
+
+W-Twin fits a power-law baseline to early training steps, then at every step computes:
+
+```
+W(t) = Q(t) · (D(t) − α)
+
+D(t) = (L_obs(t) − L_pred(t)) / σ_local(t)   ← how far off the expected curve
+Q(t) = exp(−MSE_fit / τ)                        ← how much to trust the baseline
+α    = 2.0                                       ← detection threshold (z-score)
+```
+
+An alert fires when `W(t) > 0` for 5 consecutive steps. No tuning required for basic use.
+
+---
+
+## Results
+
+From the [paper](https://doi.org/10.5281/zenodo.21842461) — real nano-GPT training runs:
+
+| Experiment           | Runs          | W-Twin             | Threshold | CUSUM                 |
+| -------------------- | ------------- | ------------------ | --------- | --------------------- |
+| Progressive drift    | 9             | **9/9 (100%)**     | 0/9 (0%)  | 0/9 (0%)              |
+| Mean detection delay | —             | **223 ± 11 steps** | —         | —                     |
+| False alarm rate     | 30 clean runs | **0/30 (0%)**      | 0/30      | 0/30                  |
+| Abrupt spike         | 2             | 2/2 (+5 steps)     | 0/2       | 2/2 (+1 step, faster) |
+
+W-Twin is the only method that detects progressive drift. For sudden spikes, CUSUM is faster — both are complementary.
+
+> **Scope:** Results are from controlled nano-GPT experiments with injected failures. External validation on independent architectures and real training logs is ongoing.
+
+---
+
+## Installation
+
+```bash
+pip install git+https://github.com/Kretski/ScalePredict.git
+```
+
+Dependencies: `numpy`, `scipy` only. No framework lock-in.
+
+---
+
+## Usage
+
+### In a training loop
+
+```python
+from scalepredict.monitor import WTwinMonitor
+
+monitor = WTwinMonitor(
+    warmup_steps=100,  # skip LR warmup phase
+    alpha=2.0,         # detection sensitivity
+    n_consec=5,        # steps above threshold before alert
+)
+
+for step, loss in training_loop():
+    state = monitor.update(step, loss)
+    if state.alert:
+        print(f"Step {step}: W={state.W:.3f} — possible degradation")
+
+print(f"First alert: {monitor.first_alert_step()}")
+```
+
+### HuggingFace Trainer
+
+```python
+from transformers import TrainerCallback
+from scalepredict.monitor import WTwinMonitor
+
+class WTwinCallback(TrainerCallback):
+    def __init__(self):
+        self.monitor = WTwinMonitor()
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        if logs and "loss" in logs:
+            st = self.monitor.update(state.global_step, logs["loss"])
+            if st.alert:
+                print(f"⚠ W-Twin alert at step {state.global_step}")
+
+trainer = Trainer(..., callbacks=[WTwinCallback()])
+```
+
+### CLI — monitor a CSV log
+
+```bash
+scalepredict monitor training_log.csv
+scalepredict monitor wandb_export.csv --loss-col train/loss --step-col _step
+scalepredict monitor training_log.csv --output wtwin_scores.csv
+scalepredict demo
+```
+
+---
+
+## API reference
+
+### `WTwinMonitor`
+
+```python
+WTwinMonitor(
+    warmup_steps=50,   # steps to skip (LR warmup)
+    alpha=2.0,         # fixed z-score threshold
+    n_consec=5,        # consecutive alerts required
+    mad_window=50,     # window for local noise estimate
+    tau=1e-3,          # baseline confidence decay
+)
+```
+
+| Method               | Returns            | Description         |
+| -------------------- | ------------------ | ------------------- |
+| `update(step, loss)` | `WTwinState`       | Process one step    |
+| `first_alert_step()` | `int \| None`      | Step of first alert |
+| `history`            | `list[WTwinState]` | Full history        |
+| `reset()`            | —                  | Reset state         |
+
+`WTwinState` fields: `step`, `l_obs`, `l_pred`, `D`, `Q`, `T`, `W`, `alert`
+
+### Custom baseline
+
+```python
+from scalepredict.monitor.baseline import BaseBaseline
+from scalepredict.monitor import WTwinMonitor
+
+class MyBaseline(BaseBaseline):
+    def fit(self, steps, losses): ...
+    def predict(self, t): ...
+    @property
+    def fit_mse(self): return 0.001
+    @property
+    def is_fitted(self): return True
+
+monitor = WTwinMonitor(baseline=MyBaseline())
+```
+
+---
+
+## Reproduce the paper experiments
+
+```bash
+git clone https://github.com/Kretski/ScalePredict.git
+cd ScalePredict
+pip install -e ".[train]"
+
+# Clean run
+python examples/train_real.py --mode none --steps 3000 --model-size small --seed 42
+
+# Progressive drift (key result)
+python examples/train_real.py --mode progressive_label \
+    --failure-step 2000 --steps 3000 --model-size small \
+    --seed 42 --ramp-steps 1000 --max-noise-prob 0.5
+
+# Abrupt failure
+python examples/train_real.py --mode weight_corrupt \
+    --failure-step 2000 --steps 3000 --model-size small --seed 42
+```
+
+---
+
+## Limitations
+
+- Validated on nano-GPT (842K parameters) with synthetic byte-level text
+- Power-law baseline assumes monotonically decreasing loss
+- Failures are injected synthetically
+- External validation on independent architectures pending
+
+Full details in Section 8 of the [paper](https://doi.org/10.5281/zenodo.21842461).
+
+---
+
+## Feedback welcome
+
+If you run ScalePredict on your own training logs — whether it works or not — please open an [issue](https://github.com/Kretski/ScalePredict/issues). External validation is the next priority.
+
+---
+
+## Citation
+
+```bibtex
+@software{kretski2026wtwin,
+  author    = {Kretski, Dimitar},
+  title     = {W-Twin: Forecast-Based Detection of Progressive
+               Neural Network Training Degradation},
+  year      = {2026},
+  doi       = {10.5281/zenodo.21842461},
+  url       = {https://zenodo.org/records/21842461},
+  publisher = {Zenodo}
+}
+```
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+**Author:** Dimitar Kretski, Center for Hydro- and Aerodynamics, Varna, Bulgaria
+ORCID: [0000-0001-5108-2243](https://orcid.org/0000-0001-5108-2243)
+
