@@ -1,267 +1,206 @@
-# ⚡ ScalePredict
 # ScalePredict
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **W-Twin: Forecast-Based Detection of Progressive Neural Network Training Degradation**
 
-ScalePredict monitors neural network training by comparing the observed
-loss trajectory against a scaling-law baseline. W-Twin detects
-progressive degradation that is invisible to classical threshold and
-CUSUM detectors.
-
-## Results (real nano-GPT training runs)
-
-| Experiment | Runs | W-Twin | Threshold | CUSUM |
-|---|---|---|---|---|
-| Progressive drift | 9 | **9/9 (100%)** | 0/9 | 0/9 |
-| Mean delay | — | **223 ± 11 steps** | — | — |
-| False alarm rate | 30 clean | **0/30 (0%)** | 0/30 | 0/30 |
-| Abrupt failure | 2 | 2/2 (+5 steps) | 0/2 | 2/2 (+1 step) |
-
-## Citation
-
-```bibtex
-@software{kretski2026wtwin,
-  author = {Kretski, Dimitar},
-  title  = {W-Twin: Forecast-Based Detection of Progressive 
-             Neural Network Training Degradation},
-  year   = {2026},
-  doi    = {10.5281/zenodo.21842461},
-  url    = {https://zenodo.org/records/21842461}
-}
-```
-
-## Quick start
-
-```bash
-pip install torch numpy scipy
-python examples/train_real.py --mode progressive_label \
-    --failure-step 2000 --steps 3000 --model-size small --seed 42
-```
-> Run a 2-min local benchmark → predict how long your AI job will take on cloud GPU.
-"Premium soon: Tiny Transformer proxy for LLMs + better accuracy + real cloud prices. Email for early access
-No guessing. No wasted money.
-
-<p align="center">
-  <a href="https://github.com/Kretski/ScalePredict">
-    <img src="https://img.shields.io/github/stars/Kretski/ScalePredict?style=for-the-badge&color=yellow" alt="GitHub Stars">
-  </a>
-  &nbsp;
-  <a href="https://scalepredict.streamlit.app">
-    <img src="https://img.shields.io/badge/Live%20Demo-scalepredict.streamlit.app-00f5c4?style=for-the-badge" alt="Live Demo">
-  </a>
-  &nbsp;
-  <a href="https://scalepredict.streamlit.app/calculator">
-    <img src="https://img.shields.io/badge/Calculator-No%20Install%20Needed-orange?style=for-the-badge" alt="Calculator">
-  </a>
-</p>
-
-<p align="center">
-  <b>⭐ If this saved you from a wrong GPU choice — star the repo.</b>
-</p>
+ScalePredict monitors neural network training by comparing the observed loss trajectory against a scaling-law baseline (ScalePredict). W-Twin detects progressive degradation that is invisible to classical threshold and CUSUM detectors.
 
 ---
 
 ## The Problem
 
-You have 1 million images to process with AI.  
-You open AWS and see:
-
-```
-T4   GPU  →  $0.52/hr
-V100 GPU  →  $1.80/hr  
-A100 GPU  →  $3.20/hr
-```
-
-You don't know which one to pick.  
-You don't know how many hours you'll need.  
-You guess. You pay. Sometimes you're wrong.
-
-> *"I chose V100 for a job that turned out to be too easy —  
-> could have done it on T4 for half the price."*  
-> — Reddit user, r/learnmachinelearning
-
--**ScalePredict Update – March 2026**
-
-337 views, 30 testers and 140 clones in the last 14 days.
-
-People most often go straight to “Run a 2-min benchmark” — this is the best signal that the idea resonates.
-
-User feedback (very accurate):
-> “ResNet-18 is good for regular models, but for transformers with long context the prediction will be less accurate.”
-
-I agree 100%. That’s why I’m adding it as a known limitation in the documentation.
-
-**What’s coming soon:**
-- Tiny Transformer proxy (nanoGPT-style) — specifically for LLM and long-context tasks
-- Long-context correction factor (quadratic attention)
-- Real-time cloud prices + recommendation “V100 or T4 is enough?”
-- Parameter-count fallback for quick checks
-
-If you tested — please share:
-
-- What error did you get (predicted vs real)?
-
-- On what model/job (ResNet, Llama, diffusion…)?
-
-Repo: https://github.com/Kretski/ScalePredict
-Demo: https://scalepredict.streamlit.app/calculator
-
-Thanks to everyone who tried! ⚡--
+Current training monitors are **reactive** — they detect NaN losses, gradient explosions, or hardware failures *after* they occur. Progressive degradation (slowly increasing label noise, gradual weight corruption, subtle data pipeline issues) accumulates undetected until significant GPU compute has been wasted.
 
 ## The Solution
 
-**Option A — Calculator (no install, 30 seconds):**
+W-Twin compares each training step against an **expected trajectory** derived from scaling laws:
 
-Open [scalepredict.streamlit.app/calculator](https://scalepredict.streamlit.app/calculator),
-enter your data type, file count and model → see runtime instantly.
+```
+W(t) = Q(t) · (D(t) − α)
 
-**Option B — Full benchmark (2 minutes, more accurate):**
+where:
+  D(t) = (L_obs(t) − L_pred(t)) / σ_local(t)   ← baseline-normalized deviation
+  Q(t) = exp(−MSE_fit / τ)                        ← baseline confidence
+  α    = fixed z-score threshold (default: 2.0)
+```
+
+Alert fires when `W(t) > 0` for `n_consec` consecutive steps.
+
+---
+
+## Results
+
+From the paper ([Zenodo 10.5281/zenodo.21842461](https://doi.org/10.5281/zenodo.21842461)):
+
+| Experiment | Runs | W-Twin | Threshold | CUSUM |
+|---|---|---|---|---|
+| Progressive drift detection | 9 | **9/9 (100%)** | 0/9 | 0/9 |
+| Mean detection delay | — | **223 ± 11 steps** | — | — |
+| False alarm rate | 30 clean | **0/30 (0%)** | 0/30 | 0/30 |
+| Abrupt failure (spike) | 2 | 2/2 (+5 steps) | 0/2 | 2/2 (+1 step, faster) |
+
+W-Twin is the **only method that detects progressive drift**. For abrupt failures, CUSUM remains faster.
+
+---
+
+## Installation
 
 ```bash
-python run_benchmark.py
+pip install scalepredict
 ```
 
-Measures your actual machine. Then:
-
+For training with PyTorch:
+```bash
+pip install scalepredict[train]
 ```
-⚡ A100  →  0.4h   fastest
-   V100  →  0.8h
-   A10G  →  1.1h
-   T4    →  2.3h
-```
-
-Look up the price yourself. Multiply. Done.
 
 ---
 
 ## Quick Start
 
+### Python API
+
+```python
+from scalepredict.monitor import WTwinMonitor
+
+monitor = WTwinMonitor(
+    warmup_steps=100,   # skip LR warmup
+    alpha=2.0,          # z-score threshold
+    n_consec=5,         # consecutive steps for alert
+)
+
+# Stream step-by-step during training
+for step, loss in training_loop():
+    state = monitor.update(step, loss)
+    if state.alert:
+        print(f"ALERT at step {step}: W={state.W:.3f}")
+        # → rollback, stop, or notify
+```
+
+### CLI — monitor a training log CSV
+
 ```bash
-# Install
-pip install -r requirements.txt
-
-# Step 1 — measure your machine (2 min)
-python run_benchmark.py
-
-# Step 2 — open dashboard
-streamlit run scalepredict_app.py
+scalepredict monitor training_log.csv
 ```
 
-Opens at `http://localhost:8501`
+```bash
+# Specify column names
+scalepredict monitor wandb_export.csv --loss-col train/loss --step-col _step
 
----
+# Save W-Twin scores to CSV
+scalepredict monitor training_log.csv --output wtwin_scores.csv
 
-## Tested on Real Hardware
-
-All three machines ran the same `run_benchmark.py` — no simulated data.
-
-| Machine | CPU/GPU | Throughput | W Score | Ratio vs Lenovo |
-|---------|---------|-----------|---------|-----------------|
-| Lenovo L14 (Ryzen 7 Pro) | AMD CPU | 58 img/s | +0.054 | 1.0x baseline |
-| Fujitsu H710 (Sandy Bridge) | Intel CPU | 14 img/s | -0.165 | 4.8x slower |
-| Xeon + Quadro M4000 | Intel + GPU | 639 img/s | +0.730 | 7.6x faster |
-
-### Cross-Machine Correlations
-
-| Pair | Pearson r | Spearman ρ |
-|------|-----------|------------|
-| Lenovo ↔ Fujitsu | **0.9977** | **1.0000** |
-| Lenovo ↔ Xeon+GPU | **0.9971** | **1.0000** |
-| Fujitsu ↔ Xeon+GPU | **0.9998** | **1.0000** |
-
-**Spearman ρ = 1.000 across all pairs** — measured, not theoretical.
-
----
-
-## How It Works
-
-```
-run_benchmark.py
-  → measures latency across batch sizes [1, 8, 32, 64, 128]
-  → removes GPU warmup outliers automatically
-  → computes W score = Q·D - T
-  → saves scalepredict_profile.json
-
-scalepredict_app.py
-  → reads your profile
-  → applies k(t,d) scaling model
-  → predicts runtime on T4 / V100 / A100 / A10G
+# Adjust sensitivity
+scalepredict monitor training_log.csv --alpha 1.5 --warmup 200
 ```
 
-### The k(t,d) Model
+### CLI — quick demo (no file needed)
 
-```
-k(t,d) = k₀ · e^(−αt) · (1 + β/d)
-
-t  = batch size
-d  = latency proxy (ms × 1000)
-k₀ = architecture constant
-```
-
-Not a lookup table. Not a heuristic.  
-Original formula — cross-architecture scaling model.
-
----
-
-## Known Limitations
-
-- Optimized for CNN inference (ResNet, YOLO, image classification)
-- Transformer models with long context may show different memory access patterns — prediction less accurate for sequences > 512 tokens
-- Prediction accuracy decreases for models with irregular memory access
-- GPU warmup outliers are removed automatically (first batch excluded)
-
----
-
-## Privacy
-
-The `scalepredict_profile.json` contains:
-- CPU model name
-- RAM size
-- Core count
-- Benchmark results (latency, throughput)
-
-**No usernames. No location. No personal data.**  
-Open it in any text editor to verify before uploading.
-
----
-
-## Files
-
-```
-ScalePredict/
-├── run_benchmark.py      ← run this on your machine
-├── scalepredict_app.py   ← Streamlit dashboard
-├── calculator.py         ← simple calculator, no benchmark needed
-├── requirements.txt      ← dependencies
-└── README.md
+```bash
+scalepredict demo
 ```
 
 ---
 
-## Roadmap
+## Integration Examples
 
-- [x] CPU benchmark (Lenovo L14)
-- [x] CPU benchmark (Fujitsu H710)
-- [x] GPU benchmark (Xeon + Quadro M4000)
-- [x] Streamlit dashboard
-- [x] Simple calculator (no install)
-- [x] r > 0.997 on all 3 machine pairs
-- [x] Known limitations documented
-- [x] Privacy notice
-- [ ] Transformer workload support
-- [ ] GCP / Azure pricing links
-- [ ] arXiv preprint
-- [ ] pip package
+### HuggingFace Trainer callback
+
+```python
+from transformers import TrainerCallback
+from scalepredict.monitor import WTwinMonitor
+
+class WTwinCallback(TrainerCallback):
+    def __init__(self, alert_fn=None):
+        self.monitor = WTwinMonitor()
+        self.alert_fn = alert_fn or (lambda s: print(f"ALERT at step {s}"))
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        if logs and "loss" in logs:
+            st = self.monitor.update(state.global_step, logs["loss"])
+            if st.alert:
+                self.alert_fn(state.global_step)
+
+# Usage:
+trainer = Trainer(..., callbacks=[WTwinCallback()])
+```
+
+### Weights & Biases CSV export
+
+```bash
+# Export from W&B: Runs → Export → CSV
+scalepredict monitor wandb_run_export.csv \
+    --loss-col train/loss \
+    --step-col _step \
+    --warmup 200
+```
+
+---
+
+## Architecture
+
+```
+ScalePredict
+├── scalepredict.monitor      ← W-Twin (core)
+│   ├── WTwinMonitor          ← streaming detector
+│   ├── PowerLawBaseline      ← ScalePredict baseline (plug-and-play)
+│   └── run_ablation()        ← comparative benchmark
+├── scalepredict.common       ← shared math (MAD, power-law fit)
+└── scalepredict.cli          ← CLI entry point
+```
+
+The baseline is **plug-and-play** — replace `PowerLawBaseline` with any causal forecasting model:
+
+```python
+from scalepredict.monitor.baseline import BaseBaseline
+from scalepredict.monitor import WTwinMonitor
+
+class MyKalmanBaseline(BaseBaseline):
+    def fit(self, steps, losses): ...
+    def predict(self, t): ...
+    @property
+    def fit_mse(self): ...
+    @property
+    def is_fitted(self): ...
+
+monitor = WTwinMonitor(baseline=MyKalmanBaseline())
+```
+
+---
+
+## Limitations
+
+- Validated on nano-GPT (842K params) with synthetic byte-level text
+- Assumes monotonically decreasing loss during calibration (power-law)
+- Failure injection is synthetic (label corruption, weight corruption)
+- External validation on public step-level training logs is pending
+
+See Section 8 (Threats to Validity) in the [paper](https://doi.org/10.5281/zenodo.21842461).
+
+---
+
+## Citation
+
+```bibtex
+@software{kretski2026wtwin,
+  author    = {Kretski, Dimitar},
+  title     = {W-Twin: Forecast-Based Detection of Progressive
+               Neural Network Training Degradation},
+  year      = {2026},
+  doi       = {10.5281/zenodo.21842461},
+  url       = {https://zenodo.org/records/21842461},
+  publisher = {Zenodo}
+}
+```
 
 ---
 
 ## License
 
-MIT — use freely.
+MIT — see [LICENSE](LICENSE).
 
----
-
-*3 machines. 3 real benchmarks. Spearman ρ = 1.000.*  
-*⭐ Star the repo if it helped you.*
+Author: Dimitar Kretski, Center for Hydro- and Aerodynamics, Varna, Bulgaria
+ORCID: [0000-0001-5108-2243](https://orcid.org/0000-0001-5108-2243)

@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scalepredict"
+version = "1.0.0"
+description = "W-Twin: Forecast-based detection of progressive neural network training degradation"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Dimitar Kretski", email = "kretski@cha.bg" }
+]
+keywords = [
+    "machine learning", "training monitoring", "anomaly detection",
+    "neural networks", "scaling laws", "MLOps", "W-Twin"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+train = ["torch>=2.0"]
+dev   = ["pytest", "matplotlib"]
+
+[project.scripts]
+scalepredict = "scalepredict.cli:main"
+
+[project.urls]
+Homepage      = "https://github.com/Kretski/ScalePredict"
+Documentation = "https://github.com/Kretski/ScalePredict#readme"
+Repository    = "https://github.com/Kretski/ScalePredict"
+"Bug Tracker" = "https://github.com/Kretski/ScalePredict/issues"
+Paper         = "https://doi.org/10.5281/zenodo.21842461"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scalepredict*"]
