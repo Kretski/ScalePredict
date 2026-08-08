@@ -132,6 +132,30 @@ scalepredict monitor training_log.csv --output wtwin_scores.csv
 scalepredict demo
 ```
 
+### CLI — detect + classify + suggest *(v1.2)*
+
+```bash
+# Detect alert AND get failure classification + recommendation
+scalepredict suggest training_log.csv
+
+# With full JSON output
+scalepredict suggest training_log.csv --json
+```
+
+Output example:
+
+```
+⚠  W-Twin Alert at step 2390
+   Failure type : gradual_drift  (confidence: 51%)
+   Suggestion   : consider_lr_reduction
+   Action       : manual_review
+   Reasoning    : D(t) shows a sustained positive slope — training is
+                  gradually deviating from the expected trajectory.
+   [EXPERIMENTAL — validate before acting]
+```
+
+> `suggest` is advisory only — it does not modify any training state.
+
 ---
 
 ## API reference
@@ -156,6 +180,25 @@ WTwinMonitor(
 | `reset()`            | —                  | Reset state         |
 
 `WTwinState` fields: `step`, `l_obs`, `l_pred`, `D`, `Q`, `T`, `W`, `alert`
+
+### `suggest(monitor)` *(v1.2, experimental)*
+
+```python
+from scalepredict.monitor import WTwinMonitor, suggest
+
+monitor = WTwinMonitor()
+for step, loss in training_loop():
+    monitor.update(step, loss)
+
+s = suggest(monitor)
+print(s.failure_type)   # "gradual_drift" | "abrupt_spike" | "uncertain"
+print(s.suggestion)     # "consider_lr_reduction" | "consider_rollback" | "manual_review"
+print(s.confidence)     # float in [0.5, 0.95]
+print(s.as_dict())      # full JSON-serializable output
+```
+
+> **Experimental:** classifier uses heuristics from synthetic experiments only.
+> Not validated on labeled real failures. All suggestions require human review.
 
 ### Custom baseline
 
@@ -203,6 +246,7 @@ python examples/train_real.py --mode weight_corrupt \
 - Validated on nano-GPT (842K parameters) with synthetic byte-level text
 - Power-law baseline assumes monotonically decreasing loss
 - Failures are injected synthetically
+- `suggest()` classifier not validated on labeled real failures
 - External validation on independent architectures pending
 
 Full details in Section 8 of the [paper](https://doi.org/10.5281/zenodo.21842461).
