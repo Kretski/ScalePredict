@@ -272,7 +272,10 @@ If you run ScalePredict on your own training logs — whether it works or not �
   publisher = {Zenodo}
 }
 ```
-
+## Did it work for you?
+If you ran ScalePredict on a real training log — whether it detected 
+something or missed it — please open an issue. One data point from 
+a real run is worth more than 10 synthetic experiments.
 ---
 
 ## License
