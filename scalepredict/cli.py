@@ -113,6 +113,7 @@ def cmd_monitor(args):
 def cmd_suggest(args):
     """Run W-Twin + suggest() on a CSV training log."""
     import json
+    import math
     import numpy as np
     from scalepredict.monitor import WTwinMonitor
     from scalepredict.monitor.suggest import suggest
