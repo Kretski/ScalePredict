@@ -164,7 +164,7 @@ def cmd_suggest(args):
         print(json.dumps(s.as_dict(), indent=2))
 
 
-
+def cmd_demo(args):
     """Run W-Twin on a synthetic demo (no file needed)."""
     import numpy as np
     from scalepredict.monitor import WTwinMonitor
