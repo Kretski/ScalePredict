@@ -1,7 +1,18 @@
 # Changelog
 
 All notable changes to ScalePredict are documented here.
+## [1.2.0] — 2026-08-08
 
+### Added
+- `suggest()` — failure classifier and structured recommendation engine
+- `scalepredict suggest log.csv` — CLI subcommand
+- Failure types: `abrupt_spike`, `gradual_drift`, `uncertain`
+- Suggestions: `consider_rollback`, `consider_lr_reduction`, `manual_review`
+
+### Notes
+- suggest() is EXPERIMENTAL — heuristics only, not validated on labeled failures
+- All suggestions are advisory; no training state is modified automatically
+- Classifier output: failure_type, confidence [0.5–0.95], reasoning text
 ## [1.0.0] — 2026-08-07
 
 ### First public release
