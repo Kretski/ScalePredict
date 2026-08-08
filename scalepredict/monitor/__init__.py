@@ -12,6 +12,7 @@ Main entry points:
 from scalepredict.monitor.wtwin import WTwinMonitor, WTwinState
 from scalepredict.monitor.baseline import PowerLawBaseline, BaseBaseline
 from scalepredict.monitor.benchmark import run_benchmark
+from scalepredict.monitor.suggest import suggest, Suggestion
 
 __all__ = [
     "WTwinMonitor",
@@ -19,4 +20,6 @@ __all__ = [
     "PowerLawBaseline",
     "BaseBaseline",
     "run_benchmark",
+    "suggest",
+    "Suggestion",
 ]

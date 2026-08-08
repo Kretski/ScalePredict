@@ -110,7 +110,61 @@ def cmd_monitor(args):
     print()
 
 
-def cmd_demo(args):
+def cmd_suggest(args):
+    """Run W-Twin + suggest() on a CSV training log."""
+    import json
+    import numpy as np
+    from scalepredict.monitor import WTwinMonitor
+    from scalepredict.monitor.suggest import suggest
+    from pathlib import Path
+    import csv
+
+    path = Path(args.file)
+    if not path.exists():
+        print(f"Error: file not found: {path}", file=sys.stderr)
+        sys.exit(1)
+
+    # Read CSV
+    steps, losses = [], []
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                s = float(row[args.step_col])
+                l = float(row[args.loss_col])
+                if math.isfinite(s) and math.isfinite(l):
+                    steps.append(int(s))
+                    losses.append(l)
+            except (ValueError, KeyError):
+                continue
+
+    if len(steps) < 10:
+        print(f"Error: only {len(steps)} valid rows.", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"\n  ScalePredict W-Twin Suggest")
+    print(f"  File: {path.name}  ({len(steps)} steps)")
+    print()
+
+    # Run monitor
+    monitor = WTwinMonitor(
+        warmup_steps=args.warmup,
+        alpha=args.alpha,
+        n_consec=args.n_consec,
+    )
+    for s, l in zip(steps, losses):
+        monitor.update(s, l)
+
+    # Get suggestion
+    s = suggest(monitor)
+    print(s)
+
+    if args.json:
+        print()
+        print(json.dumps(s.as_dict(), indent=2))
+
+
+
     """Run W-Twin on a synthetic demo (no file needed)."""
     import numpy as np
     from scalepredict.monitor import WTwinMonitor
@@ -179,6 +233,19 @@ def main():
     p_mon.add_argument("--output", "-o",
                        help="Save W-Twin scores to CSV file")
     p_mon.set_defaults(func=cmd_monitor)
+
+    # ── suggest subcommand ────────────────────────────────────────────────────
+    p_sug = sub.add_parser("suggest",
+                           help="Run W-Twin and return failure classification + suggestion")
+    p_sug.add_argument("file", help="Path to CSV training log")
+    p_sug.add_argument("--loss-col", default="train_loss")
+    p_sug.add_argument("--step-col", default="step")
+    p_sug.add_argument("--alpha", type=float, default=2.0)
+    p_sug.add_argument("--warmup", type=int, default=100)
+    p_sug.add_argument("--n-consec", type=int, default=5)
+    p_sug.add_argument("--json", action="store_true",
+                       help="Also print full JSON output")
+    p_sug.set_defaults(func=cmd_suggest)
 
     # ── demo subcommand ───────────────────────────────────────────────────────
     p_demo = sub.add_parser("demo",
