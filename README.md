@@ -1,5 +1,6 @@
 # ScalePredict
-
+> **Looking for the training loss monitor?**
+> W-Twin has moved to [github.com/Kretski/WTwin](https://github.com/Kretski/WTwin)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
 [![CI](https://github.com/Kretski/ScalePredict/actions/workflows/ci.yml/badge.svg)](https://github.com/Kretski/ScalePredict/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
