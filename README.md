@@ -1,7 +1,7 @@
 # ScalePredict
 > **Looking for the training loss monitor?**
 > W-Twin has moved to [github.com/Kretski/WTwin](https://github.com/Kretski/WTwin)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21951979.svg)](https://doi.org/10.5281/zenodo.21951979)
 [![CI](https://github.com/Kretski/ScalePredict/actions/workflows/ci.yml/badge.svg)](https://github.com/Kretski/ScalePredict/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -59,7 +59,7 @@ An alert fires when `W(t) > 0` for 5 consecutive steps. No tuning required for b
 
 ## Results
 
-From the [paper](https://doi.org/10.5281/zenodo.21842461) — real nano-GPT training runs:
+From the [paper](https://doi.org/10.5281/zenodo.21951979) — real nano-GPT training runs:
 
 | Experiment           | Runs          | W-Twin             | Threshold | CUSUM                 |
 | -------------------- | ------------- | ------------------ | --------- | --------------------- |
@@ -250,7 +250,7 @@ python examples/train_real.py --mode weight_corrupt \
 - `suggest()` classifier not validated on labeled real failures
 - External validation on independent architectures pending
 
-Full details in Section 8 of the [paper](https://doi.org/10.5281/zenodo.21842461).
+Full details in Section 8 of the [paper](https://doi.org/10.5281/zenodo.21951979).
 
 ---
 
@@ -268,7 +268,7 @@ If you run ScalePredict on your own training logs — whether it works or not �
   title     = {W-Twin: Forecast-Based Detection of Progressive
                Neural Network Training Degradation},
   year      = {2026},
-  doi       = {10.5281/zenodo.21842461},
+  doi       = {10.5281/zenodo.21951979},
   url       = {https://zenodo.org/records/21842461},
   publisher = {Zenodo}
 }
