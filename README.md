@@ -1,5 +1,6 @@
 # ScalePredict
-
+> **Looking for the training loss monitor?**
+> W-Twin has moved to [github.com/Kretski/WTwin](https://github.com/Kretski/WTwin)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21842461.svg)](https://doi.org/10.5281/zenodo.21842461)
 [![CI](https://github.com/Kretski/ScalePredict/actions/workflows/ci.yml/badge.svg)](https://github.com/Kretski/ScalePredict/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -272,7 +273,10 @@ If you run ScalePredict on your own training logs — whether it works or not �
   publisher = {Zenodo}
 }
 ```
-
+## Did it work for you?
+If you ran ScalePredict on a real training log — whether it detected 
+something or missed it — please open an issue. One data point from 
+a real run is worth more than 10 synthetic experiments.
 ---
 
 ## License
