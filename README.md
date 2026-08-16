@@ -36,7 +36,7 @@ W-Twin is built exactly for this case: **gradual, progressive degradation** that
 | False alarms (clean) | **0/30**       | 0/30      | 0/30             |
 | Abrupt spike         | 2/2            | 0/2       | **2/2** (faster) |
 
-W-Twin and CUSUM are complementary: use both.
+W-Twin and CUSUM are complementary: use both. The CUSUM baseline here is a simple rolling-mean implementation — a tuned CUSUM will perform better on abrupt spikes.
 
 > Controlled nano-GPT experiments (842K params) with injected failures.
 
@@ -56,6 +56,24 @@ W range on clean run: [−105, −1.7] — stably negative throughout.
 
 > W-Twin detects trajectory deviation, not high final loss.  
 > The two higher-final-loss runs that followed normal power-law convergence were correctly not flagged.
+
+---
+
+## Ablation results
+
+Controlled experiments — char-level Transformer (200K params, AdamW + cosine):
+
+| Mode | Scenario | Final loss | vs none | Compute saved |
+|------|----------|-----------|---------|---------------|
+| none | clean | 1.29 | — | — |
+| none | degraded | 3.03 | baseline | — |
+| active (LR×0.5) | degraded | 3.05 | +0.7% worse | — |
+| **early stop** | **degraded** | **2.57** | **−15.3%** | **27.4%** |
+
+Early stopping on W-Twin alert: −15% final loss, 27% compute saved.  
+LR reduction on alert: no improvement (honest negative).
+
+> Synthetic label-noise degradation. N=8 seeds. Not production scale.
 
 ---
 
