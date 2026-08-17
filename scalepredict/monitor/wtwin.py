@@ -1,5 +1,5 @@
 """
-scalepredict.monitor.wtwin
+wtwin.monitor.wtwin
 ===========================
 W-Twin — online training trajectory deviation monitor.
 
@@ -16,8 +16,8 @@ Alert condition:
     W(t) > 0  for  n_consec  consecutive steps
 
 Reference:
-    Kretski, D. (2026). ScalePredict: Predictive Training Analytics.
-    https://github.com/Kretski/ScalePredict
+    Kretski, D. (2026). W-Twin: Forecast-Based Detection of Progressive Neural Network Training Degradation.
+    https://github.com/Kretski/WTwin
 """
 
 from __future__ import annotations
@@ -26,8 +26,8 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
-from scalepredict.monitor.baseline import BaseBaseline, PowerLawBaseline
-from scalepredict.common.math_utils import mad_scale
+from wtwin.monitor.baseline import BaseBaseline, PowerLawBaseline
+from wtwin.common.math_utils import mad_scale
 
 
 class WTwinState(NamedTuple):
@@ -84,6 +84,8 @@ class WTwinMonitor:
     calibration_frac: float = 0.10
     warmup_steps: int = 50
     use_adaptive_T: bool = False  # False = fixed alpha threshold (more robust)
+    scale_free: bool = False       # If True, warmup_steps = 0.005 × T_train
+    T_train: int = 0               # Total expected training steps (needed if scale_free=True)
 
     # Internal state
     _steps: list[int] = field(default_factory=list, init=False, repr=False)
@@ -98,6 +100,9 @@ class WTwinMonitor:
     _in_alert: bool = field(default=False, init=False, repr=False)
 
     def __post_init__(self):
+        # Scale-free warmup: warmup = 0.5% × T_train
+        if self.scale_free and self.T_train > 0:
+            self.warmup_steps = max(50, int(0.005 * self.T_train))
         # Propagate calibration params to default baseline if it's PowerLawBaseline
         if isinstance(self.baseline, PowerLawBaseline):
             self.baseline.calibration_frac = self.calibration_frac
